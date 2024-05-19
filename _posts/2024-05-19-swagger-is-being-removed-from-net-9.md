@@ -227,7 +227,7 @@ internal sealed class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvi
 
 And that's about it when it comes to what Microsoft will be providing with it's in-house OpenAPI support. No UI, no tools to generate client code, So what are the options if we want a supporting UI to be built into our APIs that we can use for local ad-hoc testing ?
 
-## OpenAPI tooling
+## OpenAPI tooling options
 
 ### Keep using the Swagger UI
 
