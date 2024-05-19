@@ -12,13 +12,14 @@ You've probably heard or seen on the internet that Swagger (a.k.a Swachbuckle) w
 ## It's official
 Yes it's an official announcement made through a [Github issue](https://github.com/dotnet/aspnetcore/issues/54599) on the ASP.NET Core repository, which spread some concern amongst the .NET community.
 
-As described by the author of the announcement, the shipping of the Swachbuckle nuget package as a dependency of ASP.NET Core web API templates will be suspended beginning with .NET 9,
+As described by the author of the announcement, the shipping of the Swachbuckle nuget package as a dependency of ASP.NET Core web API templates will be suspended beginning with .NET 9.
+
 The inclusion of the `Swachbuckle` package as a dependency dates back to .NET 5, which provided built-in support for OpenAPI along with a web-based UI to interact with and test an API.
 
 ## Why ?
-The reason why Microsoft decided to ditch the package is the lack of interactivity from the maintainer, although the package repo showed some activity recently :no_mouth:, but there still numerous issues that needed to be addressed, besides there was no official release for .NET 8.
+The reason why Microsoft decided to ditch the package is the lack of interactivity from the maintainer, although the package repo showed some activity recently :no_mouth:, but there still numerous issues that need to be addressed and resolved, besides there was no official release for .NET 8.
 
-The ASP.NET Core team's plan is to get rid of the dependency on `Swachbuckle.AspNetCore` from the web API template and extend the in-house library `Microsoft.AspNetCore.OpenApi` to provide OpenAPI support.
+The ASP.NET Core team's plan is to get rid of the dependency on `Swachbuckle.AspNetCore` from the web API templates and extend the in-house library `Microsoft.AspNetCore.OpenApi` to provide OpenAPI support.
 
 That does not mean the `Swachbuckle` package is going anywhere, it can still be used along with other packages such as [NSwag](https://github.com/RicoSuter/NSwag) which allows —in addition to OpenAPI support— client and server generation from an OpenAPI document.
 
@@ -28,7 +29,7 @@ The fact that OpenAPI support becomes a first-class citizen in ASP.NET Core, doe
 
 ## Current state of the art
 
-As of today, when you generate a new project using the ASP.NET Core minimal web API template, your `Program.cs` file will look like this :
+As of today, when you generate a new project using the ASP.NET Core minimal web API template as an option, your `Program.cs` file will look like this :
 
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
@@ -122,7 +123,9 @@ And the `csproj` file contains a reference to the `Swachbuckle.AspNetCore` NuGet
 
 ## The release of .NET 9
 
-As I mentionned earlier, with the release of .NET 9, the `Swachbuckle.AspNetCore` package will be removed as a dependency of web API templates, and csproj files will look somewhat like this :
+### OpenAPI document generation
+
+As I mentionned earlier, with the release of .NET 9, the `Swachbuckle.AspNetCore` package will be removed as a dependency from web API templates, and `csproj` files will look somewhat like this :
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk.Web">
@@ -150,18 +153,82 @@ builder.Services.AddOpenApi();
 {: file="Program.cs"}
 {: .nolineno }
 
-And to enable the endpoint serving the OpenAPI document in JSON format, the following line will be replacing the one provided by the `Swachbuckle` package :
+And to enable the endpoint serving the generated OpenAPI document in JSON format, the following line will be replacing the one provided by the `Swachbuckle` package :
 ```csharp
 app.MapOpenApi();
 ```
 {: file="Program.cs"}
 {: .nolineno }
 
-With that the OpenAPI document is ready to be served via the `/openapi/v1.json` endpoint.
+With that the OpenAPI document is ready to be served at the `/openapi/v1.json` endpoint.
 
-And that's about it when it comes to what Microsoft will be providing with it's in-house OpenAPI support, no UI, no tools to generate clients code, So what do we do if we want  a supporting UI to be built into our APIs that we can use for testing purposes ?
+### Options for OpenAPI document customization
+
+There are also provided options for customizing the generated OpenAPI document :
+- It can be customized by changing it's name, OpenAPI version, the route the OpenAPI document is served at.
+- It can be cached to avoid document generation on each HTTP request.
+- The access to an OpenAPI endpoint can be limited to only authorized users.
+
+### Customizing with Transformers
+
+The OpenAPI document can also be customized with transformers, which is useful for scenarios like adding top-level information to the OpenAPI document, adding parameters to all operations, modifying descriptions of parameters, etc...
+
+This sample from Microsoft's documentation demonstrates the use of a transformer to add JWT bearer-related schemes to the OpenAPI document's top level :
+
+```csharp
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.OpenApi;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
+
+var builder = WebApplication.CreateBuilder();
+
+builder.Services.AddAuthentication().AddJwtBearer();
+
+builder.Services.AddOpenApi(options =>
+{
+    options.UseTransformer<BearerSecuritySchemeTransformer>();
+});
+
+var app = builder.Build();
+
+app.MapOpenApi();
+
+app.MapGet("/", () => "Hello world!");
+
+app.Run();
+
+internal sealed class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvider authenticationSchemeProvider) : IOpenApiDocumentTransformer
+{
+    public async Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
+    {
+        var authenticationSchemes = await authenticationSchemeProvider.GetAllSchemesAsync();
+        if (authenticationSchemes.Any(authScheme => authScheme.Name == "Bearer"))
+        {
+            var requirements = new Dictionary<string, OpenApiSecurityScheme>
+            {
+                ["Bearer"] = new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer", // "bearer" refers to the header name here
+                    In = ParameterLocation.Header,
+                    BearerFormat = "Json Web Token"
+                }
+            };
+            document.Components ??= new OpenApiComponents();
+            document.Components.SecuritySchemes = requirements;
+        }
+    }
+}
+```
+{: file="Program.cs"}
+{: .nolineno"}
+
+And that's about it when it comes to what Microsoft will be providing with it's in-house OpenAPI support. No UI, no tools to generate client code, So what are the options if we want a supporting UI to be built into our APIs that we can use for local ad-hoc testing ?
 
 ## OpenAPI tooling
 
 ### Keep using the Swagger UI
 
+(Work in progress...)
