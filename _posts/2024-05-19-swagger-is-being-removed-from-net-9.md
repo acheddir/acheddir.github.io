@@ -25,7 +25,7 @@ That does not mean the `Swachbuckle` package is going anywhere, it can still be 
 
 ## Goodbye Swagger UI
 
-The fact that OpenAPI support becomes a first-class citizen in ASP.NET Core, doesn't mean we'll be having all the Swagger tools that were provided by 3<sup>rd</sup> party libraries and allowed interacting with Open API documents like the Swagger UI, client and server generation tools, etc...
+The fact that OpenAPI support becomes a first-class citizen in ASP.NET Core, doesn't mean we'll be having all the Swagger tools that were provided by 3<sup>rd</sup> party libraries and allowed interacting with Open API documents, like the Swagger UI, client and server generation tools, etc...
 
 Unfortunately the Swagger aspect is being removed with the release of .NET 9, and developers will have to rely on other libraries or custom development to bring back a UI to test and interact with an ASP.NET Core web API.
 
@@ -123,7 +123,7 @@ The `csproj` file contains a reference to the `Swachbuckle.AspNetCore` NuGet pac
 {: file=".csproj"}
 {: .nolineno }
 
-## The release of .NET 9
+## What are the options with .NET 9 ?
 
 As mentionned earlier, with the release of .NET 9 the `Swachbuckle.AspNetCore` package will be removed as a dependency from web API templates, and some changes should be made to switch off from using the package.
 
@@ -149,7 +149,7 @@ First thing to do is to get rid of the package, now `csproj` files will look lik
 {: file=".csproj"}
 {: .nolineno }
 
-The instructions provided by `Swachbuckle.AspNetCore` to register OpenAPI/Swagger-related services will be replaced by the following line :
+The extension methods provided by `Swachbuckle.AspNetCore` to register OpenAPI/Swagger-related services will be replaced by the following line :
 
 ```csharp
 builder.Services.AddOpenApi();
@@ -169,22 +169,21 @@ With that the OpenAPI document is ready to be served at the `/openapi/v1.json` e
 ### Options for OpenAPI document customization
 
 Numerous options are provided for customizing the generated OpenAPI document :
-- It can be customized by changing it's name, OpenAPI version, the route the OpenAPI document is served at.
-- It can be cached to avoid document generation on each HTTP request.
+- The document can be customized by changing it's name, OpenAPI version, the route the OpenAPI document is served at.
+- Caching is an option to avoid document generation on each HTTP request.
 - The access to an OpenAPI endpoint can be limited to only authorized users.
 
 ### Customizing with Transformers
 
-The OpenAPI document can also be customized with transformers, which is useful for scenarios like adding top-level information to the OpenAPI document, adding parameters to all operations, modifying descriptions of parameters and so on.
+The OpenAPI document can also be customized with transformers, which is useful for scenarios like adding top-level information to an OpenAPI document, adding parameters to all operations, modifying descriptions of parameters and so on.
 
-This sample from Microsoft's documentation demonstrates the use of a transformer to add JWT bearer-related schemes to the OpenAPI document's top level :
+This [sample](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/aspnetcore-openapi?view=aspnetcore-9.0&tabs=netcore-cli) from Microsoft's documentation demonstrates the use of a transformer to add JWT bearer-related schemes to the OpenAPI document's top level :
 
 ```csharp
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder();
 
@@ -227,7 +226,7 @@ internal sealed class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvi
 }
 ```
 {: file="Program.cs"}
-{: .nolineno"}
+{: .nolineno}
 
 And that's about it when it comes to what Microsoft will be providing with it's in-house OpenAPI support. No UI, no tools to generate client code, So what are the options if we want local ad-hoc testing to be built into our APIs ?
 
@@ -236,3 +235,4 @@ And that's about it when it comes to what Microsoft will be providing with it's 
 ### Keep using the Swagger UI
 
 (Work in progress...)
+
