@@ -9,23 +9,25 @@ pin: true
 
 You've probably heard or seen on the internet that Swagger (a.k.a Swachbuckle) will be deprecated with the release of .NET 9. So I'll try to go into more details about that and discuss the options to providing OpenAPI support for ASP.NET Core Web APIs starting from .NET 9.
 
-## It's official
+## Is it official ?
 Yes it's an official announcement made through a [Github issue](https://github.com/dotnet/aspnetcore/issues/54599) on the ASP.NET Core repository, which spread some concern amongst the .NET community.
 
-As described by the author of the announcement, the shipping of the Swachbuckle nuget package as a dependency of ASP.NET Core web API templates will be suspended beginning with .NET 9.
-
 The inclusion of the `Swachbuckle` package as a dependency dates back to .NET 5, which provided built-in support for OpenAPI along with a web-based UI to interact with and test an API.
+
+As described by the author of the announcement, the shipping of the Swachbuckle nuget package as a dependency of ASP.NET Core web API templates will be suspended beginning with .NET 9.
 
 ## Why ?
 The reason why Microsoft decided to ditch the package is the lack of interactivity from the maintainer, although the package repo showed some activity recently :no_mouth:, but there still numerous issues that need to be addressed and resolved, besides there was no official release for .NET 8.
 
 The ASP.NET Core team's plan is to get rid of the dependency on `Swachbuckle.AspNetCore` from the web API templates and extend the in-house library `Microsoft.AspNetCore.OpenApi` to provide OpenAPI support.
 
-That does not mean the `Swachbuckle` package is going anywhere, it can still be used along with other packages such as [NSwag](https://github.com/RicoSuter/NSwag) which allows —in addition to OpenAPI support— client and server generation from an OpenAPI document.
+That does not mean the `Swachbuckle` package is going anywhere, it can still be used like other packages such as [NSwag](https://github.com/RicoSuter/NSwag) which allows —in addition to OpenAPI support— client and server generation from an OpenAPI document.
 
 ## Goodbye Swagger UI
 
-The fact that OpenAPI support becomes a first-class citizen in ASP.NET Core, doesn't mean we will be having all the Swagger goodies and tools that were provided by 3<sup>rd</sup> party libraries and allowed interacting with Open API documents like the Swagger UI. Unfortunately the Swagger aspect is being removed with the release of .NET 9, and developers will have to rely on other libraries or custom development to bring back a UI to test and interact with an ASP.NET Core web API.
+The fact that OpenAPI support becomes a first-class citizen in ASP.NET Core, doesn't mean we'll be having all the Swagger tools that were provided by 3<sup>rd</sup> party libraries and allowed interacting with Open API documents like the Swagger UI, client and server generation tools, etc...
+
+Unfortunately the Swagger aspect is being removed with the release of .NET 9, and developers will have to rely on other libraries or custom development to bring back a UI to test and interact with an ASP.NET Core web API.
 
 ## Current state of the art
 
@@ -101,7 +103,7 @@ if (app.Environment.IsDevelopment())
 {: file="Program.cs"}
 {: .nolineno }
 
-And the `csproj` file contains a reference to the `Swachbuckle.AspNetCore` NuGet package :
+The `csproj` file contains a reference to the `Swachbuckle.AspNetCore` NuGet package :
 ```xml
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
@@ -123,9 +125,11 @@ And the `csproj` file contains a reference to the `Swachbuckle.AspNetCore` NuGet
 
 ## The release of .NET 9
 
+As mentionned earlier, with the release of .NET 9 the `Swachbuckle.AspNetCore` package will be removed as a dependency from web API templates, and some changes should be made to switch off from using the package.
+
 ### OpenAPI document generation
 
-As I mentionned earlier, with the release of .NET 9, the `Swachbuckle.AspNetCore` package will be removed as a dependency from web API templates, and `csproj` files will look somewhat like this :
+First thing to do is to get rid of the package, now `csproj` files will look like the following :
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk.Web">
@@ -145,7 +149,7 @@ As I mentionned earlier, with the release of .NET 9, the `Swachbuckle.AspNetCore
 {: file=".csproj"}
 {: .nolineno }
 
-Now the instructions provided by `Swachbuckle.AspNetCore` to register OpenAPI/Swagger-related services will be replaced by the following line :
+The instructions provided by `Swachbuckle.AspNetCore` to register OpenAPI/Swagger-related services will be replaced by the following line :
 
 ```csharp
 builder.Services.AddOpenApi();
@@ -164,14 +168,14 @@ With that the OpenAPI document is ready to be served at the `/openapi/v1.json` e
 
 ### Options for OpenAPI document customization
 
-There are also provided options for customizing the generated OpenAPI document :
+Numerous options are provided for customizing the generated OpenAPI document :
 - It can be customized by changing it's name, OpenAPI version, the route the OpenAPI document is served at.
 - It can be cached to avoid document generation on each HTTP request.
 - The access to an OpenAPI endpoint can be limited to only authorized users.
 
 ### Customizing with Transformers
 
-The OpenAPI document can also be customized with transformers, which is useful for scenarios like adding top-level information to the OpenAPI document, adding parameters to all operations, modifying descriptions of parameters, etc...
+The OpenAPI document can also be customized with transformers, which is useful for scenarios like adding top-level information to the OpenAPI document, adding parameters to all operations, modifying descriptions of parameters and so on.
 
 This sample from Microsoft's documentation demonstrates the use of a transformer to add JWT bearer-related schemes to the OpenAPI document's top level :
 
@@ -225,7 +229,7 @@ internal sealed class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvi
 {: file="Program.cs"}
 {: .nolineno"}
 
-And that's about it when it comes to what Microsoft will be providing with it's in-house OpenAPI support. No UI, no tools to generate client code, So what are the options if we want a supporting UI to be built into our APIs that we can use for local ad-hoc testing ?
+And that's about it when it comes to what Microsoft will be providing with it's in-house OpenAPI support. No UI, no tools to generate client code, So what are the options if we want local ad-hoc testing to be built into our APIs ?
 
 ## OpenAPI tooling options
 
