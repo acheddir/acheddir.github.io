@@ -125,7 +125,9 @@ The `csproj` file contains a reference to the `Swachbuckle.AspNetCore` NuGet pac
 
 ## What are the options with .NET 9 ?
 
-As mentionned earlier, with the release of .NET 9 the `Swachbuckle.AspNetCore` package will be removed as a dependency from web API templates, and some changes should be made to switch off from using the package.
+As mentionned earlier, with the release of .NET 9 the `Swachbuckle.AspNetCore` package will be removed as a dependency from web API templates.
+
+If you're not someone like me who likes to stick to LTS versions of .NET (which is something I discourage), there a few changes that needs to be made to switch to using the Microsoft's OpenAPI library.
 
 ### OpenAPI document generation
 
@@ -177,7 +179,7 @@ Numerous options are provided for customizing the generated OpenAPI document :
 
 The OpenAPI document can also be customized with transformers, which is useful for scenarios like adding top-level information to an OpenAPI document, adding parameters to all operations, modifying descriptions of parameters and so on.
 
-This [sample](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/aspnetcore-openapi?view=aspnetcore-9.0&tabs=netcore-cli) from Microsoft's documentation demonstrates the use of a transformer to add JWT bearer-related schemes to the OpenAPI document's top level :
+This sample from Microsoft's [documentation](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis/aspnetcore-openapi?view=aspnetcore-9.0&tabs=netcore-cli) demonstrates the use of a transformer to add JWT bearer-related schemes to the OpenAPI document's top level :
 
 ```csharp
 using Microsoft.AspNetCore.Authentication;
@@ -233,6 +235,16 @@ And that's about it when it comes to what Microsoft will be providing with it's 
 ## OpenAPI tooling options
 
 ### Keep using the Swagger UI
+
+You can still use the Swagger UI package, which you'll have to install manually and configure to serve the Swagger UI endpoint :
+
+```bash
+dotnet add package Swashbuckle.AspNetCore.SwaggerUI
+```
+{: file=".NET CLI"}
+{: .nolineno}
+
+
 
 (Work in progress...)
 
