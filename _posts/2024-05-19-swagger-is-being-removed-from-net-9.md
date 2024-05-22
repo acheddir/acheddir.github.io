@@ -1,6 +1,9 @@
 ---
 layout: post
 title: Swagger is being removed from .NET 9
+image:
+    path: /assets/img/posts/swagger_copy.jpg
+    alt: Swagger UI of the Petstore API sample - https://petstore.swagger.io
 date: 2024-05-19 15:59 +0100
 categories: [".NET", "ASP.NET Core"]
 tags: ["openapi", "swagger", "dotnet"]
@@ -10,28 +13,26 @@ pin: true
 You've probably heard or seen on the internet that Swagger (a.k.a Swachbuckle) will be deprecated with the release of .NET 9. So I'll try to go into more details about that and discuss the options to providing OpenAPI support for ASP.NET Core Web APIs starting from .NET 9.
 
 ## Is it official ?
-Yes it's an official announcement made through a [Github issue](https://github.com/dotnet/aspnetcore/issues/54599) on the ASP.NET Core repository, which spread some concern amongst the .NET community.
+Yes it's an official announcement made by the ASP.NET Core team through a [Github issue](https://github.com/dotnet/aspnetcore/issues/54599), which spread some concern amongst the .NET community.
 
-The inclusion of the `Swachbuckle` package as a dependency dates back to .NET 5, which provided built-in support for OpenAPI along with a web-based UI to interact with and test an API.
+The inclusion of the `Swachbuckle.AspNetCore` package as a dependency dates back to .NET 5, which provided built-in support for OpenAPI along with a web-based UI to test and interact with an API.
 
-As described by the author of the announcement, the shipping of the Swachbuckle nuget package as a dependency of ASP.NET Core web API templates will be suspended beginning with .NET 9.
+As described by the author of the announcement, the shipping of the `Swachbuckle.AspNetCore` package as a dependency of ASP.NET Core web API templates will be suspended beginning with .NET 9.
 
 ## Why ?
 The reason why Microsoft decided to ditch the package is the lack of interactivity from the maintainer, although the package repo showed some activity recently :no_mouth:, but there still numerous issues that need to be addressed and resolved, besides there was no official release for .NET 8.
 
 The ASP.NET Core team's plan is to get rid of the dependency on `Swachbuckle.AspNetCore` from the web API templates and extend the in-house library `Microsoft.AspNetCore.OpenApi` to provide OpenAPI support.
 
-That does not mean the `Swachbuckle` package is going anywhere, it can still be used like other packages such as [NSwag](https://github.com/RicoSuter/NSwag) which allows —in addition to OpenAPI support— client and server generation from an OpenAPI document.
+That does not mean the `Swachbuckle` packages are going anywhere, they can still be used like any other packages such as [NSwag](https://github.com/RicoSuter/NSwag) which allows —in addition to OpenAPI support— client and server generation from an OpenAPI document.
 
 ## Goodbye Swagger UI
-
 The fact that OpenAPI support becomes a first-class citizen in ASP.NET Core, doesn't mean we'll be having all the Swagger tools that were provided by 3<sup>rd</sup> party libraries and allowed interacting with Open API documents, like the Swagger UI, client and server generation tools, etc...
 
 Unfortunately the Swagger aspect is being removed with the release of .NET 9, and developers will have to rely on other libraries or custom development to bring back a UI to test and interact with an ASP.NET Core web API.
 
-## Current state of the art
-
-As of today, when you generate a new project using the ASP.NET Core minimal web API template as an option, your `Program.cs` file will look like this :
+## Current state-of-the-art
+When you generate a new project using the ASP.NET Core minimal web API template as an option, your `Program.cs` file will look like this :
 
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
@@ -82,26 +83,10 @@ record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {: file="Program.cs"}
 {: .nolineno }
 
-The lines below, add OpenAPI/Swagger services to the DI container of ASP.NET Core and configure the HTTP request pipeline to serve the OpenAPI document and the Swagger UI endpoints :
-
-```csharp
-// Add services to the container.
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-```
-{: file="Program.cs"}
-{: .nolineno }
-
-```csharp
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-```
-{: file="Program.cs"}
-{: .nolineno }
+In the preceding code :
+- `builder.Services.AddSwaggerGen();` adds OpenAPI/Swagger services to the DI container of ASP.NET Core.
+- `app.UseSwagger();` configures the HTTP request pipeline to serve the OpenAPI document.
+- `app.UseSwaggerUI();` configures the HTTP request pipeline to serve the Swagger UI endpoints.
 
 The `csproj` file contains a reference to the `Swachbuckle.AspNetCore` NuGet package :
 ```xml
@@ -127,7 +112,7 @@ The `csproj` file contains a reference to the `Swachbuckle.AspNetCore` NuGet pac
 
 As mentionned earlier, with the release of .NET 9 the `Swachbuckle.AspNetCore` package will be removed as a dependency from web API templates.
 
-If you're not someone like me who likes to stick to LTS versions of .NET (which is something I discourage), there a few changes that needs to be made to switch to using the Microsoft's OpenAPI library.
+If you don't stick to LTS versions of .NET (which is something I discourage), there a few changes that needs to be made to switch to using the Microsoft's OpenAPI library.
 
 ### OpenAPI document generation
 
@@ -243,8 +228,6 @@ dotnet add package Swashbuckle.AspNetCore.SwaggerUI
 ```
 {: file=".NET CLI"}
 {: .nolineno}
-
-
 
 (Work in progress...)
 
