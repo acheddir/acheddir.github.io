@@ -20,7 +20,7 @@ The inclusion of the `Swachbuckle.AspNetCore` package as a dependency dates back
 As described by the author of the announcement, the shipping of the `Swachbuckle.AspNetCore` package as a dependency of ASP.NET Core web API templates will be suspended beginning with .NET 9.
 
 ## Why ?
-The reason why Microsoft decided to ditch the package is the lack of interactivity from the maintainer, although the package repo showed some activity recently :no_mouth:, but there still numerous issues that need to be addressed and resolved, besides there was no official release for .NET 8.
+The reason why Microsoft decided to ditch the package is the lack of interactivity from the maintainer, although the package repo showed some activity recently, but there still numerous issues that need to be addressed and resolved, besides there was no official release for .NET 8.
 
 The ASP.NET Core team's plan is to get rid of the dependency on `Swachbuckle.AspNetCore` from the web API templates and extend the in-house library `Microsoft.AspNetCore.OpenApi` to provide OpenAPI support.
 
@@ -44,7 +44,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -88,7 +87,7 @@ In the preceding code :
 - `app.UseSwagger();` configures the HTTP request pipeline to serve the OpenAPI document.
 - `app.UseSwaggerUI();` configures the HTTP request pipeline to serve the Swagger UI endpoints.
 
-The `csproj` file contains a reference to the `Swachbuckle.AspNetCore` NuGet package :
+The `csproj` file holds a reference to the `Swachbuckle.AspNetCore` NuGet package :
 ```xml
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
@@ -150,6 +149,29 @@ app.MapOpenApi();
 ```
 {: file="Program.cs"}
 {: .nolineno }
+
+The updated `Program.cs` file now looks like the following :
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddOpenApi();
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+}
+
+app.UseHttpsRedirection();
+
+// ...
+
+app.Run();
+```
+{: file="Program.cs"}
+{: .nolineno }
+
 
 With that the OpenAPI document is ready to be served at the `/openapi/v1.json` endpoint.
 
@@ -215,7 +237,7 @@ internal sealed class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvi
 {: file="Program.cs"}
 {: .nolineno}
 
-And that's about it when it comes to what Microsoft will be providing with it's in-house OpenAPI support. No UI, no tools to generate client code, So what are the options if we want local ad-hoc testing to be built into our APIs ?
+And that's about it when it comes to what Microsoft will be providing with it's in-house OpenAPI support. No UI, no tools to generate client code, So what are the options if we want ad-hoc testing to be built into our APIs ?
 
 ## OpenAPI tooling options
 
@@ -229,5 +251,38 @@ dotnet add package Swashbuckle.AspNetCore.SwaggerUI
 {: file=".NET CLI"}
 {: .nolineno}
 
+Configure the Swagger UI middleware with the OpenAPI document route :
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddOpenApi();
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+
+    // Configuring the Swagger UI endpoint
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "v1");
+    });
+}
+
+app.UseHttpsRedirection();
+
+// ...
+
+app.Run();
+```
+{: file="Program.cs"}
+{: .nolineno }
+
+### Use Scalar interactive API documentation
+
+[Scalar](https://scalar.com/) is an open-source highly customizable platform that offers a set of tools for interacting with APIs, generating and customizing API references based on an OAS file.
+
+Scalar is 
 (Work in progress...)
 
