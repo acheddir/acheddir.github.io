@@ -1,9 +1,7 @@
 ---
 layout: post
 title: Swagger is being removed from .NET 9
-image:
-    path: /assets/img/posts/swagger_copy.jpg
-    alt: Swagger UI of the Petstore API sample - https://petstore.swagger.io
+image: /assets/img/posts/api_explorer.webp
 date: 2024-05-19 15:59 +0100
 categories: [".NET", "ASP.NET Core"]
 tags: ["openapi", "swagger", "dotnet"]
