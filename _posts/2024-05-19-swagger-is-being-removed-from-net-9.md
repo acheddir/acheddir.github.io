@@ -2,7 +2,7 @@
 layout: post
 title: Swagger is being removed from .NET 9
 image: /assets/img/posts/api_explorer.webp
-date: 2024-05-19 15:59 +0100
+date: 2024-05-23 08:00 +0100
 categories: [".NET", "ASP.NET Core"]
 tags: ["openapi", "swagger", "dotnet"]
 pin: true
