@@ -283,7 +283,7 @@ app.Run();
 
 ![Scalar](/assets/img/posts/scalar_dark.png){: .light }
 ![Scalar](/assets/img/posts/scalar_light.png){: .dark }
-_Scalar API references page - https://docs.scalar.com/_
+_Scalar API documentation page - https://docs.scalar.com/_
 
 Scalar can be integrated as a NuGet package into ASP.NET Core web APIs :
 ```bash
@@ -291,7 +291,7 @@ dotnet add package Scalar.AspNetCore
 ```
 {: file=".NET CLI"}
 
-To configure the middleware that will be serving the Scalar API reference UI add the following lines to your `Program.cs` :
+To configure the middleware that will be serving the Scalar API reference UI, add the following lines to your `Program.cs` :
 ```csharp
 // ...
 
@@ -306,7 +306,7 @@ if (app.Envitonment.IsDevelopment())
 
 By default Scalar uses the OpenAPI document route `/openapi/v1.json` which can be customized using the middleware options.
 
-The Scalar API reference UI is servet at `/scalar/v1` by default which can also be customized.
+The Scalar API reference UI is served at `/scalar/v1` by default which can also be customized.
 
 ![Scalar](/assets/img/posts/scalar_net_dark.png){: .light }
 ![Scalar](/assets/img/posts/scalar_net_light.png){: .dark }
@@ -315,6 +315,6 @@ The Scalar API reference UI is servet at `/scalar/v1` by default which can also 
 
 In conclusion, ASP.NET Core team's decision will provide a more streamlined and integrated approach for handling OpenAPI support within the ASP.NET Core ecosystem.
 
-Developers can still leverage the Swagger UI package a.k.a Swachbuckle or switch to modern alternatives like the Scalar API documentation platform that offers a more robust and customizable solution for generating and interacting with API references.
+Developers can still leverage the Swagger UI package a.k.a Swachbuckle or switch to modern alternatives like the Scalar API documentation platform that offers a more robust and customizable solution for interacting with OpenAPI documents.
 
 Exploring with new customization and tooling options will ensure that API documentation and testing remain efficient and effective, it will also help the community to continue building and maintaining high-quality web APIs in the evolving .NET landscape.
