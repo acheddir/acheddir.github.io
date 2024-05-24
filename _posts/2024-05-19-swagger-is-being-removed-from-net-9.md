@@ -18,7 +18,7 @@ The inclusion of the `Swachbuckle.AspNetCore` package as a dependency dates back
 As described by the author of the announcement, the shipping of the `Swachbuckle.AspNetCore` package as a dependency of ASP.NET Core web API templates will be suspended beginning with .NET 9.
 
 ## Why ?
-The reason why Microsoft decided to ditch the package is the lack of interactivity from the maintainer, although the package repo showed some activity recently, but there still numerous issues that need to be addressed and resolved, besides there was no official release for .NET 8.
+The reason why Microsoft decided to ditch the package is the lack of interactivity from the maintainer, although the package repo showed some activity recently, but there are still numerous issues that need to be addressed and resolved, besides there was no official release for .NET 8.
 
 The ASP.NET Core team's plan is to get rid of the dependency on `Swachbuckle.AspNetCore` from the web API templates and extend the in-house library `Microsoft.AspNetCore.OpenApi` to provide OpenAPI support.
 
@@ -32,7 +32,7 @@ Unfortunately the Swagger aspect is being removed with the release of .NET 9, an
 ## Current state-of-the-art
 When you generate a new project using the ASP.NET Core minimal web API template as an option, your `Program.cs` file will look like this :
 
-```csharp
+```csharp 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -78,7 +78,6 @@ record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 }
 ```
 {: file="Program.cs"}
-{: .nolineno }
 
 In the preceding code :
 - `builder.Services.AddSwaggerGen();` adds OpenAPI/Swagger services to the DI container of ASP.NET Core.
@@ -133,7 +132,7 @@ First thing to do is to get rid of the package, now `csproj` files will look lik
 {: file=".csproj"}
 {: .nolineno }
 
-The extension methods provided by `Swachbuckle.AspNetCore` to register OpenAPI/Swagger-related services will be replaced by the following line :
+The extension methods provided by `Swachbuckle.AspNetCore` to register OpenAPI/Swagger-related services needs to be replaced by the following line :
 
 ```csharp
 builder.Services.AddOpenApi();
@@ -141,7 +140,7 @@ builder.Services.AddOpenApi();
 {: file="Program.cs"}
 {: .nolineno }
 
-And to enable the endpoint serving the generated OpenAPI document in JSON format, the following line will be replacing the one provided by the `Swachbuckle` package :
+And to enable the endpoint serving the generated OpenAPI document in JSON format, the following line should replace the one provided by the `Swachbuckle` package :
 ```csharp
 app.MapOpenApi();
 ```
@@ -281,8 +280,8 @@ app.Run();
 
 [Scalar](https://scalar.com/) is an open-source highly customizable platform that offers a set of tools for interacting with APIs, generating and customizing API references based on an OAS file.
 
-![Scalar](/assets/img/posts/scalar_dark.png){: .light }
-![Scalar](/assets/img/posts/scalar_light.png){: .dark }
+![Scalar](/assets/img/posts/scalar_dark.png){: .dark }{: .border}
+![Scalar](/assets/img/posts/scalar_light.png){: .light }{: .border}
 _Scalar API documentation page - https://docs.scalar.com/_
 
 Scalar can be integrated as a NuGet package into ASP.NET Core web APIs :
@@ -308,8 +307,8 @@ By default Scalar uses the OpenAPI document route `/openapi/v1.json` which can b
 
 The Scalar API reference UI is served at `/scalar/v1` by default which can also be customized.
 
-![Scalar](/assets/img/posts/scalar_net_dark.png){: .light }
-![Scalar](/assets/img/posts/scalar_net_light.png){: .dark }
+![Scalar](/assets/img/posts/scalar_net_dark.png){: .dark }{: .border}
+![Scalar](/assets/img/posts/scalar_net_light.png){: .light }{: .border}
 
 ## Wrap Up
 
