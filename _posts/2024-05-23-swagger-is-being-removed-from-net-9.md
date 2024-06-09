@@ -78,6 +78,7 @@ record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 }
 ```
 {: file="Program.cs"}
+{: .nolineno }
 
 In the preceding code :
 - `builder.Services.AddSwaggerGen();` adds OpenAPI/Swagger services to the DI container of ASP.NET Core.
